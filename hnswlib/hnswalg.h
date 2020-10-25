@@ -638,7 +638,6 @@ namespace hnswlib {
             if (!input.is_open())
                 throw std::runtime_error("Cannot open file");
 
-
             // get file size:
             input.seekg(0,input.end);
             std::streampos total_filesize=input.tellg();
