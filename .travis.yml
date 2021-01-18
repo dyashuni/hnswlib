@@ -29,10 +29,8 @@ jobs:
       env: PATH=/c/Python37:/c/Python37/Scripts:$PATH
 
 install:
-  - |
-    python -m pip install .
+  - python -m pip install .
 
 script:
-  - |
-    make test
-    make dist
+  - make test
+  - make dist
