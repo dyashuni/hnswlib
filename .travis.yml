@@ -35,4 +35,4 @@ script:
         #  - python -m unittest discover --start-directory python_bindings/tests --pattern "*_test*.py"
   - python -m pip install build
   - pip list
-  - python -m build --sdist
+  - python -m build --sdist .
