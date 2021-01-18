@@ -32,5 +32,6 @@ install:
   - python -m pip install .
 
 script:
-  - make test
-  - make dist
+  - python -m unittest discover --start-directory python_bindings/tests --pattern "*_test*.py"
+  - pip -m pip install build
+  - python -m build --sdist
