@@ -3,7 +3,7 @@ pypi: dist
 
 dist:
 	-rm dist/*
-	pip install build
+	python3 -m pip install build
 	python3 -m build --sdist
 
 test:

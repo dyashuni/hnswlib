@@ -2,6 +2,10 @@ import os
 import sys
 
 import numpy as np
+
+for path in sys.path:
+    print(path)
+
 import pybind11
 import setuptools
 from setuptools import Extension, setup
