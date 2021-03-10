@@ -25,7 +25,7 @@ namespace hnswlib {
             loadIndex(location, s, max_elements);
         }
 
-        HierarchicalNSW(SpaceInterface<dist_t> *s, size_t max_elements, size_t M = 16, size_t ef_construction = 200, size_t random_seed = 100) :
+        HierarchicalNSW(SpaceInterface<dist_t> *s, size_t max_elements, size_t M = 16, size_t ef_construction = 200, unsigned int random_seed = 100) :
                 link_list_locks_(max_elements), link_list_update_locks_(max_update_element_locks), element_levels_(max_elements) {
             max_elements_ = max_elements;
 
@@ -282,7 +282,7 @@ namespace hnswlib {
 //                bool cur_node_deleted = isMarkedDeleted(current_node_id);
                 if(collect_metrics){
                     metric_hops++;
-                    metric_distance_computations+=size;
+                    metric_distance_computations +=  static_cast<long>(size);
                 }
 
 #ifdef USE_SSE
@@ -418,7 +418,7 @@ namespace hnswlib {
                 if (*ll_cur && !isUpdate) {
                     throw std::runtime_error("The newly inserted element should have blank link list");
                 }
-                setListCount(ll_cur,selectedNeighbors.size());
+                setListCount(ll_cur, static_cast<unsigned short int>(selectedNeighbors.size()));
                 tableint *data = (tableint *) (ll_cur + 1);
                 for (size_t idx = 0; idx < selectedNeighbors.size(); idx++) {
                     if (data[idx] && !isUpdate)
@@ -466,7 +466,7 @@ namespace hnswlib {
                 if (!is_cur_c_present) {
                     if (sz_link_list_other < Mcurmax) {
                         data[sz_link_list_other] = cur_c;
-                        setListCount(ll_other, sz_link_list_other + 1);
+                        setListCount(ll_other, static_cast<unsigned short int>(sz_link_list_other + 1));
                     } else {
                         // finding the "weakest" element to replace it with the new one
                         dist_t d_max = fstdistfunc_(getDataByInternalId(cur_c), getDataByInternalId(selectedNeighbors[idx]),
@@ -620,7 +620,7 @@ namespace hnswlib {
             output.write(data_level0_memory_, cur_element_count * size_data_per_element_);
 
             for (size_t i = 0; i < cur_element_count; i++) {
-                unsigned int linkListSize = element_levels_[i] > 0 ? size_links_per_element_ * element_levels_[i] : 0;
+                unsigned int linkListSize = static_cast<unsigned int>(element_levels_[i] > 0 ? size_links_per_element_ * element_levels_[i] : 0);
                 writeBinaryPOD(output, linkListSize);
                 if (linkListSize)
                     output.write(linkLists_[i], linkListSize);
@@ -721,7 +721,8 @@ namespace hnswlib {
             revSize_ = 1.0 / mult_;
             ef_ = 10;
             for (size_t i = 0; i < cur_element_count; i++) {
-                label_lookup_[getExternalLabel(i)]=i;
+                tableint i_ti = static_cast<tableint>(i);
+                label_lookup_[getExternalLabel(i_ti)] = i_ti;
                 unsigned int linkListSize;
                 readBinaryPOD(input, linkListSize);
                 if (linkListSize == 0) {
@@ -729,7 +730,7 @@ namespace hnswlib {
 
                     linkLists_[i] = nullptr;
                 } else {
-                    element_levels_[i] = linkListSize / size_links_per_element_;
+                    element_levels_[i] = static_cast<int>(linkListSize / size_links_per_element_);
                     linkLists_[i] = (char *) malloc(linkListSize);
                     if (linkLists_[i] == nullptr)
                         throw std::runtime_error("Not enough memory: loadIndex failed to allocate linklist");
@@ -740,7 +741,7 @@ namespace hnswlib {
             has_deletions_=false;
 
             for (size_t i = 0; i < cur_element_count; i++) {
-                if(isMarkedDeleted(i))
+                if(isMarkedDeleted(static_cast<tableint>(i)))
                     has_deletions_=true;
             }
 
@@ -892,7 +893,7 @@ namespace hnswlib {
                         linklistsizeint *ll_cur;
                         ll_cur = get_linklist_at_level(neigh, layer);
                         size_t candSize = candidates.size();
-                        setListCount(ll_cur, candSize);
+                        setListCount(ll_cur, static_cast<unsigned short int>(candSize));
                         tableint *data = (tableint *) (ll_cur + 1);
                         for (size_t idx = 0; idx < candSize; idx++) {
                             data[idx] = candidates.top().second;
@@ -999,7 +1000,7 @@ namespace hnswlib {
                     throw std::runtime_error("The number of elements exceeds the specified limit");
                 };
 
-                cur_c = cur_element_count;
+                cur_c = static_cast<tableint>(cur_element_count);
                 cur_element_count++;
                 label_lookup_[label] = cur_c;
             }

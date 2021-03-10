@@ -10,9 +10,9 @@ namespace hnswlib {
     public:
         vl_type curV;
         vl_type *mass;
-        unsigned int numelements;
+        size_t numelements;
 
-        VisitedList(int numelements1) {
+        VisitedList(size_t numelements1) {
             curV = -1;
             numelements = numelements1;
             mass = new vl_type[numelements];
@@ -37,12 +37,12 @@ namespace hnswlib {
     class VisitedListPool {
         std::deque<VisitedList *> pool;
         std::mutex poolguard;
-        int numelements;
+        size_t numelements;
 
     public:
-        VisitedListPool(int initmaxpools, int numelements1) {
+        VisitedListPool(size_t initmaxpools, size_t numelements1) {
             numelements = numelements1;
-            for (int i = 0; i < initmaxpools; i++)
+            for (size_t i = 0; i < initmaxpools; i++)
                 pool.push_front(new VisitedList(numelements));
         }
 
