@@ -21,8 +21,13 @@ jobs:
       - name: Test
         timeout-minutes: 15
         run: |
-          python -m unittest discover -v --start-directory examples/python --pattern "example*.py"
+          # Run example files directly
+          for example in examples/python/example*.py; do
+            python "$example"
+          done
+          # Run the unittest tests
           python -m unittest discover -v --start-directory tests/python --pattern "bindings_test*.py"
+        shell: bash
   
   test_cpp:
     runs-on: ${{ matrix.os }}
