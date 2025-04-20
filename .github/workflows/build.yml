@@ -23,7 +23,9 @@ jobs:
         run: |
           # Run example files directly
           for example in examples/python/example*.py; do
+            echo "Running example: $example"
             python "$example"
+            echo "--------------------------------"
           done
           # Run the unittest tests
           python -m unittest discover -v --start-directory tests/python --pattern "bindings_test*.py"
